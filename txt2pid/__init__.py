@@ -22,7 +22,7 @@ import re
 import typing
 
 RE_IDENTIFIER = re.compile(
-    r"\b(?P<PID>(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))\b",
+    r"\b(?P<PID>(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))|(?P<DOI>10\.\d{4,}/\S+)\b",
     re.IGNORECASE | re.MULTILINE
 )
 
@@ -33,12 +33,19 @@ class MatchedPid:
     content: str
 
 
-def txt2pids(text:str) -> typing.Iterable[typing.Tuple[int, MatchedPid]]:
+def txt2pids(text:str) -> typing.Iterable[typing.Tuple[int, int, MatchedPid]]:
     for pid_match in RE_IDENTIFIER.finditer(text):
-        pid = MatchedPid(
-            source=pid_match.group("PID"),
-            scheme=pid_match.group("scheme"),
-            content=pid_match.group("content")
-        )
-        yield [pid_match.start(), pid]
+        if pid_match.group("PID") is None:
+            pid = MatchedPid(
+                source=pid_match.group("DOI"),
+                scheme="doi",
+                content=pid_match.group("DOI")
+            )
+        else:
+            pid = MatchedPid(
+                source=pid_match.group("PID"),
+                scheme=pid_match.group("scheme"),
+                content=pid_match.group("content")
+            )
+        yield [pid_match.start(), pid_match.end(), pid]
 
