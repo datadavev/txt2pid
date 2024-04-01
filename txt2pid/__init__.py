@@ -22,7 +22,7 @@ import re
 import typing
 
 RE_IDENTIFIER = re.compile(
-    r"\b(?P<PID>(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))|(?P<DOI>10\.\d{4,}/\S+)\b",
+    r"\b(?P<PID>(urn:)?(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))|(?P<DOI>10\.\d{4,}/\S+)\b",
     re.IGNORECASE | re.MULTILINE
 )
 
