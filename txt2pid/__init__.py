@@ -22,9 +22,9 @@ import re
 import typing
 import urllib.parse
 
-_URL_PATTERN = r"(?P<URL>https?:\/\/(?P<domain>(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6})\/(?P<value>(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)))"
+_URL_PATTERN = r"(?P<URL>https?:\/\/(?P<domain>(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6})\/(?P<value>(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=\*]*)))"
 _DOI_PATTERN = r"(?P<DOI>10\.\d{4,}/\S+)"
-_PID_PATTERN = r"(?P<PID>(urn:)?(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))"
+_PID_PATTERN = r"(?P<PID>(urn:)?(?P<scheme>[A-Za-z0-9][A-Za-z0-9/;.\-]*):/?(?P<content>\S+))"
 
 RE_IDENTIFIER = re.compile(
     r"\b" + _DOI_PATTERN + r"|" + _PID_PATTERN + r"\b",
@@ -54,10 +54,13 @@ def txt2pids(text:str) -> typing.Iterable[typing.Tuple[int, int, MatchedPid]]:
                 content=match.group("DOI")
             )
         else:
+            content = match.group("content")
+            if content is not None:
+                content = content.lstrip("/ ")
             pid = MatchedPid(
                 source=match.group("PID"),
                 scheme=match.group("scheme"),
-                content=match.group("content")
+                content=content
             )
         return pid
 

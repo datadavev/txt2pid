@@ -30,6 +30,12 @@ match_cases = (
         [
             (121, 165, txt2pid.MatchedPid("ark:/12148/btv1b8449691v/f29", "ark", "12148/btv1b8449691v/f29"))
         ]
+    ),
+    (
+        "Internet](http://waybackmachine.org/*/http://www.cern.ch)",
+        [
+            (10,57,txt2pid.MatchedPid("http://www.cern.ch", "http", "www.cern.ch"))
+        ]
     )
 )
 
