@@ -20,9 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import dataclasses
 import re
 import typing
+import urllib.parse
+
+_URL_PATTERN = r"(?P<URL>https?:\/\/(?P<domain>(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6})\/(?P<value>(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)))"
+_DOI_PATTERN = r"(?P<DOI>10\.\d{4,}/\S+)"
+_PID_PATTERN = r"(?P<PID>(urn:)?(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))"
 
 RE_IDENTIFIER = re.compile(
-    r"\b(?P<PID>(urn:)?(?P<scheme>[A-Za-z0-9/;.\-]+):/?(?P<content>\S+))|(?P<DOI>10\.\d{4,}/\S+)\b",
+    r"\b" + _DOI_PATTERN + r"|" + _PID_PATTERN + r"\b",
+    re.IGNORECASE | re.MULTILINE
+)
+
+RE_COMBINED = re.compile(
+    r"\b" + _URL_PATTERN + r"|" + _DOI_PATTERN + r"|" + _PID_PATTERN + r"\b",
     re.IGNORECASE | re.MULTILINE
 )
 
@@ -34,18 +44,35 @@ class MatchedPid:
 
 
 def txt2pids(text:str) -> typing.Iterable[typing.Tuple[int, int, MatchedPid]]:
-    for pid_match in RE_IDENTIFIER.finditer(text):
-        if pid_match.group("PID") is None:
+
+    def _get_matched_pid(match: re.Match) -> MatchedPid:
+        pid = None
+        if match.group("DOI") is not None:
             pid = MatchedPid(
-                source=pid_match.group("DOI"),
+                source=match.group("DOI"),
                 scheme="doi",
-                content=pid_match.group("DOI")
+                content=match.group("DOI")
             )
         else:
             pid = MatchedPid(
-                source=pid_match.group("PID"),
-                scheme=pid_match.group("scheme"),
-                content=pid_match.group("content")
+                source=match.group("PID"),
+                scheme=match.group("scheme"),
+                content=match.group("content")
             )
-        yield [pid_match.start(), pid_match.end(), pid]
+        return pid
 
+    for pid_match in RE_COMBINED.finditer(text):
+        pid = None
+        if pid_match.group("URL") is not None:
+            url_value = pid_match.group("value")
+            if url_value is None:
+                continue
+            url_value = urllib.parse.unquote_plus(url_value)
+            u_match = RE_IDENTIFIER.search(url_value)
+            if u_match is None:
+                continue
+            pid = _get_matched_pid(u_match)
+        else:
+            pid = _get_matched_pid(pid_match)
+        if pid is not None:
+            yield [pid_match.start(), pid_match.end(), pid]

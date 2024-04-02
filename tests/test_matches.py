@@ -25,6 +25,12 @@ match_cases = (
             (21, 37, txt2pid.MatchedPid("10.1234/foo/test","doi", "10.1234/foo/test"))
         ]
     ),
+    (
+        "Working on the ARK. From a 1401 manuscript page, illuminated by Johannette Ravenelle, that itself has an ARK identifier: https://n2t.net/ark:/12148/btv1b8449691v/f29 (source gallica.bnf.fr, National Library of France).",
+        [
+            (121, 165, txt2pid.MatchedPid("ark:/12148/btv1b8449691v/f29", "ark", "12148/btv1b8449691v/f29"))
+        ]
+    )
 )
 
 @pytest.mark.parametrize("src,expected", match_cases)

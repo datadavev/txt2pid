@@ -9,7 +9,6 @@ curl -s "https://sis.web.cern.ch/submit-and-publish/persistent-identifiers/pids-
   pandoc -s -r html -t plain | \
   python -m txt2pid
 
-{"offset": 14226, "source": "ark:'", "scheme": "ark", "content": "'"}
 {"offset": 14567, "source": "ark:/13030/tf5p30086k", "scheme": "ark", "content": "13030/tf5p30086k"}
 {"offset": 15033, "source": "arXiv:1207.7214", "scheme": "arXiv", "content": "1207.7214"}
 {"offset": 15929, "source": "10.23731/CYRM-2019-007", "scheme": "doi", "content": "10.23731/CYRM-2019-007"}
