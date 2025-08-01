@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "txt2pid"
-version = "0.1.0"
+version = "0.1.2"
 description = "Extract identifiers from text."
 authors = ["datadave <605409+datadavev@users.noreply.github.com>"]
 license = "AGPLv3"
@@ -16,3 +16,5 @@ pytest = "^8.1.1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry_bumpversion.file."txt2pid/__init__.py"]
