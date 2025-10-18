@@ -3,9 +3,9 @@ name = "txt2pid"
 version = "0.1.2"
 description = "Extract identifiers from text."
 authors = [{ name = "datadave", email = "605409+datadavev@users.noreply.github.com" }]
-requires-python = "~=3.9"
+requires-python = ">=3.9"
 readme = "README.md"
-license = "AGPLv3"
+license = "AGPL-3.0-or-later"
 dependencies = ["click>=8.1.7,<9"]
 
 [dependency-groups]
